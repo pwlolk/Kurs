@@ -5,4 +5,4 @@ if(ostatnia_litera_imienia == 'a'):
     print("Cześć, dziewczyno!")
 else:
     print("Cześć, chłopaku!")
-# coś t
+# coś ta

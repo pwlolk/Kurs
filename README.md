@@ -1,2 +1,2 @@
 # Kurs
-Kurs
+*Test wyłączonego pluginu

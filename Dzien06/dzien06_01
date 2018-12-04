@@ -1,0 +1,98 @@
+#Trochę z poprzedniego dnia jeszcze
+#
+# zmienna_globalna = "A"
+# print(zmienna_globalna)
+# def rodzic():
+#     zmienna_lokalna = "B"
+#     global zmienna_globalna #referencja do zmiennej globalnej, więc działanie jest już na zmiennej globalnej, bez "global" to nowa zmienna, która lokalnie nazywa się tak jak ta globalna
+#     # praktycznie odradza się tego 'global', tak żeby modyfikować  funckje w obrębie scope'u
+#     zmienna_globalna = "A zmienione"
+#     print("Funckja rodzic: " + zmienna_globalna)
+#     print("Funkcja rodzic: " + zmienna_lokalna)
+#
+# print(zmienna_globalna)
+# rodzic()
+# print(zmienna_globalna)
+# print(zmienna_lokalna)
+
+
+## MODUŁ to wyprowadzenie częśći kodu do pliku zewnętrznego (zaleca się importowanie jak najmniejszych fragmentów kodu)
+## To co jest w głównym scopie modułu od razu się wykonuje!, więc zazwyyczaj moduły to zamknięte klasy czy funkcje
+# Jeżeli chcemy, żeby moduł był też programem to na końcu wstawia się specjalnego IFa. (ze "zmienną magiczną"). Z reguly testowe odpalenie danego modułu.
+
+# from moduly import przywitanie
+# from Dzien04 import dzien04_01
+
+## Importowanie na obecnym etapie z głównego drzewa katalogu, ewentualnie niżej (przez . zamiast /)
+
+# przywitanie.czesc("Pawel")
+
+import csv
+
+# with open('adresy.csv', "r+", newline='') as csvfle:
+#     reader = csv.reader(csvfle)
+#     for row in reader:
+#         print(row)
+#     writer = csv.writer(csvfle)
+#     writer.writerow(['Jan', 'Kowalski', "Sopot, Gdańsk", '123-432-111']) #moduł csv obejmuje Sopot i Gdańsk w jeden element żeby mieć cudzysłowy to wtedy podwójnie
+#
+# import pickle
+# with open('adresy.pickle', "rb+") as picklefile: #dla pickle'a musi być tryb binarny stąd rb+, a nie r+ jak przy csv
+#     dane = pickle.load(picklefile)
+#     print(dane)
+#     print(type(dane)) # pickle zachowuje strukturę, lista jest listą, dlatego pickle ważą więcej niż csv.
+#     lista = {'lista': [1,2,3,4], 'string': "TEST", "slownik": {"jeden", "dwa"}}
+#     # lista = [1,2,3]
+#     # pickle.dump(lista, picklefile) #zasilenie pliku pickle listą
+#
+# ## PICKLE DOBRE do przechowywania stanów, np. statystyk z plików jak w pracy domowej o zliczaniu statytsyk znaków.
+
+#Zliczanie statystyk do pliku
+# 1. otwórz plik z danymi txt
+# 2. przeiteruj znak w danych wejściowych
+# 3. porónwaj znak do znaku bazowego
+# 4. zwieksz licznik dla danego znaku
+# 5. zapisz licznik do pliku pickle
+
+import pickle
+# txt_file = "a.txt"
+
+def otworz_plik():
+    txt_file = input("Jaki plik? ")
+    try:
+        with open(txt_file) as file:
+            file.seek(0)
+            single_string = str(file.readlines())
+            return [single_string, txt_file]
+    except:
+        print("Podaj prawidłową nazwę pliku.")
+        otworz_plik()
+
+# print(otworz_plik())
+single_string, txt_file = otworz_plik()
+# print(single_string)
+# print(txt_file)
+
+def number_of_letters(txt_file):
+    # single_string = otworz_plik(txt_file)
+    number_of_letters = len(single_string) - 4
+    for i, znaki in enumerate(single_string):
+        if (single_string[i] == "." and single_string[i + 1] == "\\" and single_string[
+            i + 2] == "n"):  # bo break line'y
+            # generują 5 dodatkowych znaków
+            number_of_letters = number_of_letters - 5
+    return number_of_letters
+
+with open('stats.pickle', "rb+") as picklefile:
+    stats = {"characters_count": [0]}
+    pickle.dump(stats, picklefile)
+
+def stats_write(txt_file):
+    with open('stats.pickle', "rb+") as picklefile:
+        dane = pickle.load(picklefile)
+        # print(dane)
+        znaki = number_of_letters(txt_file)
+        dane["characters_count"] = znaki
+        print("W pliku jest {} znaków.".format(dane["characters_count"]))
+
+stats_write(txt_file)

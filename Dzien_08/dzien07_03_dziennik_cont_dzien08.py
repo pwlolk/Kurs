@@ -10,8 +10,10 @@
 # W głównym scopie powinno być jak najmniej "logiki biznesowej" (ifów, elsów itd) To wszystko raczej do funckji
 
 import pickle #zaletą pickle'a jest to, że jeżeli ładujemy tam listę, to dostajemy czytając listę, jeżeli słownik to slownik itd.
-import smtlib
-import
+import smtplib
+import pprint #ładnie wyświetla zawartość listy
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 def otworz_dziennik(plik_dziennika):
     dziennik = open(plik_dziennika,"rb+") #handler otwartego pliku
@@ -43,11 +45,25 @@ def dodaj_wpis(plik_dz): #co chcemy dodać do dziennika?
     pickle.dump(nowe_wpisy,plik_dz) #NADPISUJE NAM PLIKI, TEGO NIE CHCEMY, TZN. CHCEMY ALE Z UZUPEŁNIONĄ O WPIS LISTĄ
     print("Wpis dodany poprawnie.")
 
-def wyslij_mail(indeks, nr_wpisu):
-    temat = "Ktoś unsunął wpis"
-    tresc = "Usnięto wpis o numerze {}".format(indeks)
-    tresc = tresc + "\na dla uzytkownika jest to wpis numer {}.".format(nr_wpisu)
-    pass
+def wyslij_mail(temat,tresc):
+    # temat = "Ktoś unsunął wpis (PawelO)"
+    # tresc = "Usnięto wpis o numerze {}".format(indeks)
+    # tresc = tresc + "\na dla uzytkownika jest to wpis numer {}.".format(nr_wpisu)
+
+    mail = MIMEMultipart() #pusty kontener reprezentujący nagłówek wiadomości
+    mail["Subject"] = temat
+    mail["To"] = "isapy@o2.pl"
+    mail["From"] = "isapy@int.pl"
+
+    body = MIMEText(tresc)
+    mail.attach(body)
+
+    serwer = smtplib.SMTP("poczta.int.pl")
+    serwer.login("isapy@int.pl", "isapython;")
+    serwer.send_message(mail)
+    serwer.quit()
+
+    print("Wysłano mail!")
 
 def usun_wpis(plik_dz):
     stare_wpisy = przeczytaj_plik(plik_dz)
@@ -60,13 +76,27 @@ def usun_wpis(plik_dz):
         plik_dz.seek(0)
         pickle.dump(stare_wpisy, plik_dz)
         print("Właśnie usunąłem wpis.")
-        wyslij_mail(indeks_do_usunięcia, w_d_u)
-        print("Wysłano mail z tematem: ")
-        print(temat)
-        print("Wysłano mail z o treści: ")
-        print(tresc)
+        temat = "Ktoś unsunął wpis (PawelO)"
+        tresc = "Usnięto wpis o numerze {}".format(indeks_do_usunięcia)
+        tresc = tresc + "\na dla uzytkownika jest to wpis numer {}.".format(w_d_u)
+        wyslij_mail(temat, tresc)
     else:
         print("Nie ma takiego wpisu.")
+
+def wyszukaj_wpis(tekst,plik_dz):
+    stare_wpisy = przeczytaj_plik(plik_dz)
+    i = 0
+    for wpis in stare_wpisy:
+        if tekst in wpis["tresc"]:
+            pprint.pprint(wpis)
+            i = i+1
+    if i > 0:
+        print ("Znaleziono " + str(i) +" wpisów")
+    if i == 0:
+        print("Taki ciąg znaków nie wystepuje.")
+        # else:
+        #     print("Taki ciąg znaków nie wystepuje.")
+        # Jeżeli bez licznika, to mozna ustawić flagę typu False na zanalezienie, któą nawet jedno zanelzienie zmieni na True
 
 def wyswietl_menu():
     print("Dziennik".upper())
@@ -104,6 +134,12 @@ def zapytaj():
         print("\nUsuwanie wpisu...")
         plik_dz = otworz_dziennik(plik_dziennika)
         usun_wpis(plik_dz)
+        zamknij_dziennik(plik_dz)
+    if decyzja == "4":
+        print("\nWyszukiwanie wpisu...")
+        tekst = input("Podaj ciąg znaków do odnalezienia w dzienniku: ")
+        plik_dz = otworz_dziennik(plik_dziennika)
+        wyszukaj_wpis(tekst,plik_dz)
         zamknij_dziennik(plik_dz)
     if decyzja == "5": # Pamiętać, że string, więc porównujemy do stringa
         exit()

@@ -44,7 +44,7 @@ class Dziennik(object):
             tresc = "Usunięto wpis o indeksie: {}".format(indeks_do_usuniecia)
             tresc = tresc + "\na dla użytkownika jest to wpis numer: {}".format(wpis_do_usuniecia)
 
-            wyslij_mail(temat, tresc)
+            # wyslij_mail(temat, tresc)
             pickle.dump(self.wpisy, self.plik_dz)
             print("Właśnie usunąłem wpis")
         else:

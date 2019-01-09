@@ -12,6 +12,10 @@ class Dziennik(object):
         self.wpisy = self.przeczytaj_plik()
         self.ilosc_wpisow = len(self.wpisy)
 
+    def __del__(self):              # dodane w dn.13
+        self.zamknij_dziennik()     # dodane w dn.13
+
+
     def przeczytaj_plik(self):                                          # Jeżeli funkcja jest w klasie, to może być gdziekolwiek. Program ją sobie znajdzie.
         """
         Funkcja która z otwartego pliku czyta dane i zwraca nam w naszym przypadku w postaci listy słowników
@@ -44,13 +48,13 @@ class Dziennik(object):
             tresc = "Usunięto wpis o indeksie: {}".format(indeks_do_usuniecia)
             tresc = tresc + "\na dla użytkownika jest to wpis numer: {}".format(wpis_do_usuniecia)
 
-            wyslij_mail(temat, tresc)
+            # wyslij_mail(temat, tresc)
             pickle.dump(self.wpisy, self.plik_dz)
             print("Właśnie usunąłem wpis")
         else:
             print("Nie ma takiego wpisu")
 
-        self.zamknij_dziennik()
+        # self.zamknij_dziennik()
 
     def wyszukaj(self):
         """
@@ -75,7 +79,7 @@ class Dziennik(object):
         else:
             print("Ilość wpisów: {}".format(ilosc_wynikow))
 
-        self.zamknij_dziennik()
+        # self.zamknij_dziennik()
 
     def dodaj_wpis(self):
         """
@@ -101,7 +105,7 @@ class Dziennik(object):
         pickle.dump(nowe_wpisy, self.plik_dz)
         print("Wpis został dodany prawidłowo.")
 
-        self.zamknij_dziennik()
+        # self.zamknij_dziennik()
 
     def zamknij_dziennik(self):
         """
@@ -123,7 +127,7 @@ def wyswietl_menu():
           "4. Szukanie\n"
           "5. Wyjscie")
 
-dziennik = Dziennik() # Optymalnie wywalić to tutaj, a nie robić za każdą pętlą.
+# dziennik = Dziennik() # Optymalnie wywalić to tutaj, a nie robić za każdą pętlą.
 
 def zapytaj():
     """
@@ -147,5 +151,7 @@ def zapytaj():
         exit()
 
 while True:
+    dziennik = Dziennik()  # Przensieione,  żeby liczba wpisów się aktualizowała
     wyswietl_menu()
     zapytaj()
+    del(dziennik)   # usuwanie z pamięci, żeby jej nie zajmować (dodane w dn 13)

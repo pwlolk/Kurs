@@ -1,0 +1,18 @@
+center {
+    color: red;
+    font-weight: bold;
+    margin-top: 100px;
+}
+
+center:hover {
+    text-decoration: underline;
+    cursor: wait;
+}
+
+li {
+    color: blue;
+}
+
+li.moja_klasa {
+    color: green;
+}

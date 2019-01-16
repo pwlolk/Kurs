@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dziennik napisany w Pythonie</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="col-12">
+        <center class="moja_klasa">Menu</center>
+        <ul>
+            <li>Wyświetlanie</li>
+            <li class="moja_klasa">Dodawanie</li>
+            <li>Usuwanie</li>
+            <li class="moja_klasa">Wyszukiwanie</li>
+        </ul>
+    </div>
+    <div class="col-12">
+        <form>
+            <div class="form-group">
+                <label>Treść wpisu</label>
+                <input type="text" name="tresc" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label>Data wpisu</label>
+                <input type="date" name="data" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Dodaj wpis" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
